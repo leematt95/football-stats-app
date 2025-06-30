@@ -11,12 +11,9 @@ services:
   db:
     image: postgres:15
     restart: always
-    environment:
-      POSTGRES_USER: football
-      POSTGRES_PASSWORD: football
-      POSTGRES_DB: stats
+    env_file:
+    - .env
     volumes:
       - pgdata:/var/lib/postgresql/data
-
 volumes:
   pgdata:
