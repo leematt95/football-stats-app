@@ -1,19 +1,20 @@
-version: "3.9"
-
 services:
   web:
-    build: .
+    build: .  # Build the web container using the Dockerfile in the current directory
     ports:
-      - "5000:5000"
+      - "5000:5000"  # Map host port 5000 to container port 5000
     depends_on:
-      - db
+      - db  # Ensure DB starts before web
+    env_file:
+      - .env  # Load Flask and DB variables
 
   db:
-    image: postgres:15
-    restart: always
+    image: postgres:15  # Use PostgreSQL version 15
+    restart: always  # Restart DB if it crashes
     env_file:
-    - .env
+      - .env  # Make sure the DB picks up POSTGRES_PASSWORD, etc.
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data  # Persistent DB data
+
 volumes:
-  pgdata:
+  pgdata: {}  # Use Docker-managed volume
