@@ -32,6 +32,10 @@ logger = logging.getLogger(__name__)
 # Create Flask app instance
 # ----------------------------------------
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False  # Disable track modifications to save resources
+app.config["JSON_SORT_KEYS"] = False                # Disable sorting of JSON keys in responses
+app.config["DEBUG"] = os.getenv("DEBUG", "False").lower() == "true"  # Set debug mode based on environment variable
 app.config.from_prefixed_env()                 # Load all FLASK_* and SQLALCHEMY_* env variables
 
 # ----------------------------------------
