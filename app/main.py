@@ -14,7 +14,7 @@ load_dotenv()
 # Set up logging using environment config
 # ----------------------------------------
 log_level = os.getenv("LOG_LEVEL", "INFO").upper()
-log_format = os.getenv("LOG_FORMAT", "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 log_file = os.getenv("LOG_FILE", "app.log")
 
 logging.basicConfig(
