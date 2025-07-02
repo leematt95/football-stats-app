@@ -4,6 +4,7 @@ import os
 import logging
 from app.models.player import db                 # Import the Player model
 from app.routes.players import players_bp            # Import Blueprint for players
+app.register_blueprint(players_bp, url_prefix="/api/players")  # Register players blueprint
 
 # ----------------------------------------
 # Load environment variables from .env file
