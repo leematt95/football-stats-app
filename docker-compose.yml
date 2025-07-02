@@ -1,20 +1,33 @@
+version: "3.8"
+
 services:
   web:
-    build: .  # Build the web container using the Dockerfile in the current directory
+    build: .                               # Build from Dockerfile in project root
+    command: flask run --host=0.0.0.0 --port=5000
     ports:
-      - "5000:5000"  # Map host port 5000 to container port 5000
+      - "5000:5000"                        # Expose container port 5000 on host
     depends_on:
-      - db  # Ensure DB starts before web
+      db:
+        condition: service_healthy         # Wait for DB to be healthy before starting
     env_file:
-      - .env  # Load Flask and DB variables
+      - .env                               # Pulls FLASK_APP, FLASK_ENV, SQLALCHEMY_DATABASE_URI, etc.
+    volumes:
+      - .:/app                             # Mount code into /app so changes reflect live
+    working_dir: /app                      # Ensure Flask runs from the project root
 
   db:
-    image: postgres:15  # Use PostgreSQL version 15
-    restart: always  # Restart DB if it crashes
+    image: postgres:15-alpine              # Lightweight Postgres 15 image
+    restart: always                        # Always restart if it crashes
     env_file:
-      - .env  # Make sure the DB picks up POSTGRES_PASSWORD, etc.
+      - .env                               # Pulls POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB
     volumes:
-      - pgdata:/var/lib/postgresql/data  # Persistent DB data
+      - pgdata:/var/lib/postgresql/data    # Persist DB files
+    healthcheck:                           # Simple readiness probe
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
-  pgdata: {}  # Use Docker-managed volume
+  pgdata: {}                               # Docker-managed named volume
+  
