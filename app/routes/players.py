@@ -1,20 +1,23 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, request, jsonify
+from app.models.player import Player, db
 
 players_bp = Blueprint("players", __name__)
 
-@players_bp.route("/", methods=["GET"])
+@players_bp.route("/players", methods=["GET"])
 def get_players():
-    sample_players = [
-        {"id": 1, "name": "Bukayo Saka", "position": "RW", "team": "Arsenal"},
-        {"id": 2, "name": "Erling Haaland", "position": "ST", "team": "Man City"}
+    name_query = request.args.get("name")
+    if name_query:
+        # Case-insensitive partial match using ilike (PostgreSQL)
+        players = Player.query.filter(Player.name.ilike(f"%{name_query}%")).all()
+    else:
+        players = Player.query.all()
+
+    player_list = [
+        {"id": p.id, "name": p.name, "position": p.position, "team": p.team}
+        for p in players
     ]
-    return jsonify(sample_players)
-@players_bp.route("/<int:player_id>", methods=["GET"])
+    return jsonify(player_list), 200
+@players_bp.route("/players/<int:player_id>", methods=["GET"])
 def get_player(player_id):
-    sample_player = {
-        "id": player_id,
-        "name": "Bukayo Saka",
-        "position": "RW",
-        "team": "Arsenal"
-    }
-    return jsonify(sample_player)
+    player = Player.query.get_or_404(player_id)
+    return jsonify(player.to_dict()), 200
