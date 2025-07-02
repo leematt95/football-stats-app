@@ -1,6 +1,6 @@
 from flask import Flask
 from dotenv import load_dotenv
-from .routes.players import players_bp
+from app.routes.players import players_bp
 
 def create_app():
     load_dotenv()
