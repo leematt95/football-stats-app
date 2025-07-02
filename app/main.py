@@ -44,6 +44,8 @@ logger = logging.getLogger(__name__)
 # Initialize database
 # ----------------------------------------
 db.init_app(app)
+with app.app_context():
+    db.create_all()   # Creates all tables if they don't exist
 
 # ----------------------------------------
 # Register Blueprint for modular routes
