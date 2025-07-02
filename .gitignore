@@ -3,4 +3,4 @@ __pycache__/
 .env
 *.sqlite3
 venv/
-.env.save
+rm .env.save.env.save
