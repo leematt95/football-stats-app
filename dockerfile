@@ -5,7 +5,7 @@ FROM python:3.10-slim
 WORKDIR /app
 
 # Copy environment variables and requirements into the container
-COPY requirements.txt .        
+COPY requirements.txt .
 
 # Install Python dependencies within the container
 RUN pip install --no-cache-dir -r requirements.txt
@@ -13,10 +13,16 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the Flask application code into the container
 COPY app/ ./app/
 
-# Set environment variables required by Flask
-ENV FLASK_APP=app.main         
-ENV FLASK_RUN_HOST=0.0.0.0     
-ENV FLASK_RUN_PORT=5000        
+# Copy the entrypoint script
+COPY entrypoint.sh /app/entrypoint.sh
 
-# Set the default command to run the Flask development server
-CMD ["flask", "run"]
+# Set environment variables required by Flask
+ENV FLASK_APP=app.main
+ENV FLASK_RUN_HOST=0.0.0.0
+ENV FLASK_RUN_PORT=5000
+
+# Expose the port that Flask will run on
+EXPOSE 5000
+
+# Set the entrypoint
+ENTRYPOINT ["/app/entrypoint.sh"]
