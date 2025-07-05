@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Football Player Search</title>
+</head>
+<body>
+    <h1>Football Player Search</h1>
+    <form method="get" action="/search">
+        <input type="text" name="name" placeholder="Enter player name" value="{{ name_query or '' }}">
+        <button type="submit">Search</button>
+    </form>
+    <ul>
+    {% for player in players %}
+        <li>{{ player.name }} – {{ player.position }} ({{ player.team }})</li>
+    {% else %}
+        {% if name_query %}
+            <li>No players found for "{{ name_query }}"</li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+</body>
+</html>
