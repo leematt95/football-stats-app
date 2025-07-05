@@ -2,6 +2,8 @@ from flask import Flask
 from dotenv import load_dotenv
 import os
 import logging
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 from app.models.player import db          # SQLAlchemy instance
 from app.routes.players import players_bp # Blueprint for player routes
@@ -14,28 +16,26 @@ app = Flask(__name__)
 # ----------------------------------------
 # Load environment variables from .env
 # ----------------------------------------
-# .env: plain-text file holding key=value lines (e.g. DB URIs, secrets)
-load_dotenv()
+load_dotenv()  # Load environment variables from .env file
 
 # ----------------------------------------
 # App configuration
 # ----------------------------------------
-app.config["SQLALCHEMY_DATABASE_URI"]      = os.getenv("SQLALCHEMY_DATABASE_URI")
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["DEBUG"]                        = os.getenv("DEBUG", "False").lower() == "true"
-app.config.from_prefixed_env()  # picks up any FLASK_* or SQLALCHEMY_* vars
+app.config["DEBUG"] = os.getenv("DEBUG", "False").lower() == "true"
 
 # ----------------------------------------
 # Logging setup
 # ----------------------------------------
-log_level  = os.getenv("LOG_LEVEL", "INFO").upper()
+log_level = os.getenv("LOG_LEVEL", "INFO").upper()
 log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 logging.basicConfig(
     level=log_level,
     format=log_format,
     handlers=[
-        logging.StreamHandler(),               # send logs to STDOUT
-        logging.FileHandler(os.getenv("LOG_FILE", "app.log"))
+        logging.StreamHandler(),               # Send logs to STDOUT
+        logging.FileHandler(os.getenv("LOG_FILE", "app.log"))  # Write logs to file
     ]
 )
 logger = logging.getLogger(__name__)
@@ -44,18 +44,14 @@ logger = logging.getLogger(__name__)
 # Initialize database
 # ----------------------------------------
 db.init_app(app)
-from flask_migrate import Migrate
-
 migrate = Migrate(app, db)
-# Create tables if they don't exist. This is typically done once, or during migrations, but can be useful for initial setup
+
+# Create tables if they don't exist
 with app.app_context():
-    db.create_all()   # Creates all tables if they don't exist
+    db.create_all()
 
 # ----------------------------------------
 # Register Blueprint for modular routes
-# Prefix of "/api/players" means:
-#   GET /api/players/        → list/search players
-#   GET /api/players/<id>    → single player lookup
 # ----------------------------------------
 app.register_blueprint(players_bp, url_prefix="/api/players")
 
@@ -66,3 +62,9 @@ app.register_blueprint(players_bp, url_prefix="/api/players")
 def index():
     logger.info("Index route accessed")
     return {"message": "🏟 Welcome to the Football Stats API! 🏟"}, 200
+
+# ----------------------------------------
+# Run the application (if not using Docker)
+# ----------------------------------------
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
