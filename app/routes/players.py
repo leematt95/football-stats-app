@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 from app.models.player import Player
 
 # Blueprint sets module-local route definitions
@@ -33,11 +33,11 @@ def get_player(player_id):
         return jsonify({"error": str(e)}), 500
 
 # ——————————————————————————————————————————
-# Search players by name
+# Search players by name (JSON response)
 # URL: GET /api/players/search?name=<substring>
 # ——————————————————————————————————————————
-@players_bp.route('/search', methods=['GET'])
-def search_players():
+@players_bp.route('/search/json', methods=['GET'])
+def search_players_json():
     name_query = request.args.get('name')
     if not name_query:
         return jsonify({"error": "Missing 'name' query parameter"}), 400
@@ -45,8 +45,20 @@ def search_players():
     return jsonify([player.to_dict() for player in players]), 200
 
 # ——————————————————————————————————————————
+# Render search results in HTML
+# URL: GET /api/players/search/html?name=<substring>
+# ——————————————————————————————————————————
+@players_bp.route('/search/html', methods=['GET'])
+def search_players_html():
+    name_query = request.args.get('name')
+    players = []
+    if name_query:
+        players = Player.query.filter(Player.name.ilike(f"%{name_query}%")).all()
+    return render_template('search.html', players=players, name_query=name_query)
+
+# ——————————————————————————————————————————
 # Add pagination to GET /api/players/
-# URL: GET /api/players/?page=<page>&per_page=<per_page>
+# URL: GET /api/players/paginated?page=<page>&per_page=<per_page>
 # ——————————————————————————————————————————
 @players_bp.route('/paginated', methods=['GET'])
 def get_players_paginated():
@@ -55,9 +67,15 @@ def get_players_paginated():
         per_page = request.args.get('per_page', 10, type=int)
         name_query = request.args.get('name')
         if name_query:
-            players = Player.query.filter(Player.name.ilike(f"%{name_query}%")).paginate(page, per_page, False).items
+            pagination = Player.query.filter(Player.name.ilike(f"%{name_query}%")).paginate(page, per_page, False)
         else:
-            players = Player.query.paginate(page, per_page, False).items
-        return jsonify([player.to_dict() for player in players]), 200
+            pagination = Player.query.paginate(page, per_page, False)
+        players = pagination.items
+        return jsonify({
+            "players": [player.to_dict() for player in players],
+            "total_pages": pagination.pages,
+            "current_page": pagination.page,
+            "total_items": pagination.total
+        }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
