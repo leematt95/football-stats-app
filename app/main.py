@@ -11,7 +11,6 @@ from app.models.player import db          # SQLAlchemy instance
 # ----------------------------------------
 app = Flask(__name__)
 from app.routes.players import players_bp
-app.register_blueprint(players_bp) # Blueprint for player routes
 # ----------------------------------------
 # Load environment variables from .env
 # ----------------------------------------
