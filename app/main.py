@@ -6,13 +6,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
 from app.models.player import db          # SQLAlchemy instance
-from app.routes.players import players_bp # Blueprint for player routes
-
 # ----------------------------------------
 # Create Flask app instance
 # ----------------------------------------
 app = Flask(__name__)
-
+from app.routes.players import players_bp
+app.register_blueprint(players_bp) # Blueprint for player routes
 # ----------------------------------------
 # Load environment variables from .env
 # ----------------------------------------
