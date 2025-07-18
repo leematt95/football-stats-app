@@ -8,11 +8,11 @@ async def main():
         players = await understat.get_league_players("EPL", 2023)
         for p in players[:3]:
             print({
-                "name": p["player_name"],
-                "team": p["team_title"],
-                "goals": p["goals"],
-                "assists": p["assists"],
-                "minutes": p["time"]
+                "Name": p["player_name"],
+                "Team": p["team_title"],
+                "Goals": p["goals"],
+                "Assists": p["assists"],
+                "Minutes": p["time"]
             })
 
 asyncio.run(main())
