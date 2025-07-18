@@ -7,6 +7,8 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 
+print("🟢 app.py is starting…")     #debugging
+
 # ── Configuration & Logging ────────────────────────────────────────────────
 
 # Read database URL from env (fallback to local Postgres)
