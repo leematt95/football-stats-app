@@ -68,6 +68,11 @@ class Player(db.Model):
 def log_request():
     logger.info(f"Incoming request: {request.method} {request.url} - Params: {request.args}")
 
+@app.after_request
+def log_response(response):
+    logger.info(f"Response: {response.status_code} - {response.get_data(as_text=True)}")
+    return response
+
 @app.route('/players', methods=['GET'])
 def get_players():
     name = request.args.get('name', type=str)
@@ -78,19 +83,23 @@ def get_players():
 
     if per_page < 1 or per_page > MAX_PER_PAGE:
         return jsonify({"error": f"per_page must be between 1 and {MAX_PER_PAGE}"}), 400
+    if page < 1:
+        return jsonify({"error": "page must be greater than 0"}), 400
 
-    query = Player.query
+    filters = []
     if name:
-        query = query.filter(Player.name.ilike(f"%{name}%"))
+        filters.append(Player.name.ilike(f"%{name}%"))
     if team:
-        query = query.filter(Player.team.ilike(f"%{team}%"))
+        filters.append(Player.team.ilike(f"%{team}%"))
     if nationality:
-        query = query.filter(Player.nationality.ilike(f"%{nationality}%"))
+        filters.append(Player.nationality.ilike(f"%{nationality}%"))
 
+    query = Player.query.filter(*filters)
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     players_list = [p.to_dict() for p in pagination.items]
 
     return jsonify({
+        "success": True,
         "players": players_list,
         "total_pages": pagination.pages,
         "current_page": pagination.page,

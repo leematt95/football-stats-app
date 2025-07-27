@@ -1,59 +1,24 @@
 #!/usr/bin/env python3
 # import_players.py
 
-
-
-
 import os
-# import_players.py
-
-from dotenv import load_dotenv
-load_dotenv()
-
-import os
-# ← Insert here:
-DB_USER = os.getenv("POSTGRES_USER", "admin")
-DB_PASS = os.getenv("POSTGRES_PASSWORD", "securepass123")
-DB_NAME = os.getenv("POSTGRES_DB", "football_db")
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = os.getenv("DB_PORT", "5432")
-
-DB_URL = f"postgresql://admin:securepass123@localhost:5432/football_db"
-
-# Now the engine uses the dynamically built DB_URL:
-from sqlalchemy import create_engine
-engine = create_engine(DB_URL, echo=False)
-
 import sys
 import asyncio
 import logging
 import aiohttp
-
-from sqlalchemy import (
-    create_engine, Table, Column, Integer, String, MetaData,
-    TIMESTAMP, func, exc as sa_exc
-)
+from dotenv import load_dotenv
+from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, TIMESTAMP, func, exc as sa_exc
 from sqlalchemy.dialects.postgresql import insert
 from understat import Understat
 
-# ── Configuration & Logging ────────────────────────────────────────────────
+# ── Load Environment Variables ─────────────────────────────────────────────
 
-logging.basicConfig(
-    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
-    level=logging.INFO,
-)
-logger = logging.getLogger("import_players")
-
-# Environment‑backed config with sensible defaults
-import os
-# after load_dotenv()
+load_dotenv()
 
 DB_URL = os.getenv(
     "DATABASE_URL",
     "postgresql://admin:securepass123@localhost:5432/football_db"
 )
-print("🟢 Connecting to:", DB_URL)   # <-- debug print
-
 LEAGUE = os.getenv("LEAGUE", "epl")
 SEASON = os.getenv("SEASON", "2025")
 
@@ -63,6 +28,16 @@ try:
 except ValueError:
     logger.error(f"Invalid SEASON value: {SEASON!r}. Must be an integer string.")
     sys.exit(1)
+
+# ── Configuration & Logging ────────────────────────────────────────────────
+
+logging.basicConfig(
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    level=logging.INFO,
+)
+logger = logging.getLogger("import_players")
+logger.info(f"Connecting to database: {DB_URL}")
+logger.info(f"League: {LEAGUE}, Season: {SEASON}")
 
 # ── Database Schema Setup ──────────────────────────────────────────────────
 
@@ -160,37 +135,4 @@ async def fetch_and_store():
 
 if __name__ == "__main__":
     logger.info("Starting import_players.py")
-    logger.info(f"DB URL: {DB_URL}")
-    logger.info(f"League: {LEAGUE}, Season: {SEASON}")
     asyncio.run(fetch_and_store())
-
-
-# ── Documentation ───────────────────────────────────────────────────────────
-# Import players from Understat and store in PostgreSQL
-# Usage: Set environment variables DATABASE_URL, LEAGUE, SEASON as needed
-# Ensure the database is running and accessible
-# Run this script to fetch and store player data
-# Example: python import_players.py
-# This script uses asyncio and aiohttp for asynchronous HTTP requests
-# It uses SQLAlchemy for database interactions
-# The Understat library is used to fetch player data from the Understat API
-# The script handles upserts to avoid duplicate entries in the database
-# It logs the process and any errors encountered during execution
-# Make sure to install the required packages: understat, aiohttp, sqlalchemy, psycopg2-binary
-# Example: pip install understat aiohttp sqlalchemy psycopg2-binary
-# The script is designed to be run as a standalone application
-# It can be integrated into a larger application or run independently
-# Ensure the database schema matches the expected structure for the players table
-# The script can be modified to handle additional fields or different leagues/seasons
-# It can also be extended to handle more complex data processing or validation
-# The logging configuration can be adjusted as needed for different environments
-# The script is designed to be efficient and handle large datasets
-# It uses bulk operations to minimize database interactions
-# The script can be scheduled to run periodically to keep the player data up-to-date
-# It can also be integrated into a web application to provide real-time player data
-# The script is a good starting point for building a football stats application
-# It can be extended with additional features such as player statistics, match results, etc.
-# The script can be tested with different leagues and seasons to ensure flexibility
-# It can also be adapted for different data sources or APIs as needed
-# The script is designed to be modular and easy to maintain
-# It can be refactored into smaller functions or classes for better organization    
