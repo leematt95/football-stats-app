@@ -12,7 +12,7 @@ print("🟢 app.py is starting…")     #debugging
 # ── Configuration & Logging ────────────────────────────────────────────────
 
 # Read database URL from env (fallback to local Postgres)
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://localhost/football")
+DATABASE_URL = os.getenv("postgresql://localhost/football_db")
 
 # Pagination bounds
 DEFAULT_PAGE      = 1
