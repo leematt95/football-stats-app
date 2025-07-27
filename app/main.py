@@ -4,17 +4,15 @@ import os
 import logging
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-
-from app.models.player import db          # SQLAlchemy instance
-# ----------------------------------------
-# Create Flask app instance
-# ----------------------------------------
-app = Flask(__name__)
-from app.routes.players import players_bp
 # ----------------------------------------
 # Load environment variables from .env
 # ----------------------------------------
 load_dotenv()  # Load environment variables from .env file
+
+# ----------------------------------------
+# Create Flask app instance
+# ----------------------------------------
+app = Flask(__name__)
 
 # ----------------------------------------
 # App configuration
@@ -22,6 +20,17 @@ load_dotenv()  # Load environment variables from .env file
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["DEBUG"] = os.getenv("DEBUG", "False").lower() == "true"
+
+# ----------------------------------------
+# Initialize database
+# ----------------------------------------
+from app.models.player import db          # SQLAlchemy instance
+db.init_app(app)
+
+# ----------------------------------------
+# Import routes after app creation
+# ----------------------------------------
+from app.routes.players import players_bp
 
 # ----------------------------------------
 # Logging setup
