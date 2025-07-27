@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # import_players.py
 
+from dotenv import load_dotenv
+load_dotenv()  # <-- this loads .env into os.environ
+
+
 import os
 import sys
 import asyncio
@@ -23,9 +27,15 @@ logging.basicConfig(
 logger = logging.getLogger("import_players")
 
 # Environment‑backed config with sensible defaults
+import os
+# after load_dotenv()
+
 DB_URL = os.getenv(
-    "postgresql://localhost/football_db"
+    "DATABASE_URL",
+    "postgresql://admin:securepass123@localhost:5432/football_db"
 )
+print("🟢 Connecting to:", DB_URL)   # <-- debug print
+
 LEAGUE = os.getenv("LEAGUE", "epl")
 SEASON = os.getenv("SEASON", "2025")
 
