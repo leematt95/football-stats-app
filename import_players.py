@@ -24,8 +24,7 @@ logger = logging.getLogger("import_players")
 
 # Environment‑backed config with sensible defaults
 DB_URL = os.getenv(
-    "DATABASE_URL",
-    "postgresql://localhost/football"
+    "postgresql://localhost/football_db"
 )
 LEAGUE = os.getenv("LEAGUE", "epl")
 SEASON = os.getenv("SEASON", "2025")
