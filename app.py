@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+from dotenv import load_dotenv
+load_dotenv()  # loads .env into os.environ
+
 import os
 import logging
 from datetime import datetime
