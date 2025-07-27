@@ -32,10 +32,16 @@ logger = logging.getLogger(__name__)
 # ── Flask & Database Initialization ────────────────────────────────────────
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"]        = DATABASE_URL
+
+# Pull the full connection URL from the environment
+db_uri = os.getenv("DATABASE_URL")
+if not db_uri:
+    raise RuntimeError("DATABASE_URL is not set in the environment")
+app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
+
 
 # ── Model Definition ───────────────────────────────────────────────────────
 
