@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   web:
     build: .
@@ -10,18 +12,35 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+    # Explicitly inject these into the container
+    environment:
+      # These ensure pg_isready -h db works inside the container
+      DB_HOST: db
+      DB_PORT: 5432
+
+      # Postgres credentials should match your .env or override as needed
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+
+      # Understat config
+      LEAGUE: epl
+      SEASON: "2024"
+
+    # You can still load other vars from .env
     env_file:
       - .env
 
   db:
     image: postgres:15-alpine
-    environment:
-      POSTGRES_DB: football_db
-      POSTGRES_USER: "${POSTGRES_USER}"
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
     restart: always
     env_file:
       - .env
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
