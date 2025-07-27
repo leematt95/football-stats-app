@@ -34,10 +34,16 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 
 # Pull the full connection URL from the environment
-db_uri = os.getenv("DATABASE_URL")
-if not db_uri:
-    raise RuntimeError("DATABASE_URL is not set in the environment")
-app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
+DB_USER = os.getenv("POSTGRES_USER", "admin")
+DB_PASS = os.getenv("POSTGRES_PASSWORD", "securepass123")
+DB_NAME = os.getenv("POSTGRES_DB", "football_db")
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_PORT = os.getenv("DB_PORT", "5432")
+
+app.config["SQLALCHEMY_DATABASE_URI"] = (
+    f"postgresql://localhost/football_db"
+)
+
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
