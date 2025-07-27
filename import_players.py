@@ -1,11 +1,29 @@
 #!/usr/bin/env python3
 # import_players.py
 
-from dotenv import load_dotenv
-load_dotenv()  # <-- this loads .env into os.environ
+
 
 
 import os
+# import_players.py
+
+from dotenv import load_dotenv
+load_dotenv()
+
+import os
+# ← Insert here:
+DB_USER = os.getenv("POSTGRES_USER", "admin")
+DB_PASS = os.getenv("POSTGRES_PASSWORD", "securepass123")
+DB_NAME = os.getenv("POSTGRES_DB", "football_db")
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_PORT = os.getenv("DB_PORT", "5432")
+
+DB_URL = f"postgresql://admin:securepass123@localhost:5432/football_db"
+
+# Now the engine uses the dynamically built DB_URL:
+from sqlalchemy import create_engine
+engine = create_engine(DB_URL, echo=False)
+
 import sys
 import asyncio
 import logging
