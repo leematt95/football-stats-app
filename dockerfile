@@ -4,25 +4,33 @@ FROM python:3.10-slim
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy requirements and install Python dependencies
+# Install system deps: compiler, libpq for psycopg2, and the Postgres client for pg_isready
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      gcc \
+      libpq-dev \
+      postgresql-client && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy and install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code and import script
-COPY app/    ./app/
+# Copy the application code
+COPY app/         ./app/
 COPY import_players.py .
+COPY entrypoint.sh .
+RUN chmod +x entrypoint.sh
 
-# Copy (and make executable) the entrypoint script
-COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
-
-# Expose the port that Flask will run on
+# Expose the Flask port
 EXPOSE 5000
 
-# Entrypoint runs import then starts Flask
-ENTRYPOINT ["/app/entrypoint.sh"]
-# Start the Flask application
-CMD ["flask", "run", "--host=0.0.0.0"]     # Run on all interfaces
+# The entrypoint script will:
+#  1. wait for Postgres via pg_isready
+#  2. run import_players.py
+#  3. start the Flask API (via python -m app.main or flask run)
+ENTRYPOINT ["./entrypoint.sh"]
+
 
 # Note: Flask will automatically use the app.py file as the application entry point
 #       if the FLASK_APP environment variable is set to "app.py" (default behavior).
