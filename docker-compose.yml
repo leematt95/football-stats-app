@@ -1,37 +1,4 @@
-version: '3.8'
-
 services:
-  web:
-    build: .
-    entrypoint: ["/app/entrypoint.sh"]
-    working_dir: /app
-    volumes:
-      - .:/app
-    ports:
-      - "5000:5000"
-    depends_on:
-      db:
-        condition: service_healthy
-
-    # Explicitly inject these into the container
-    environment:
-      # These ensure pg_isready -h db works inside the container
-      DB_HOST: db
-      DB_PORT: 5432
-
-      # Postgres credentials should match your .env or override as needed
-      POSTGRES_USER: "${POSTGRES_USER}"
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
-      POSTGRES_DB: "${POSTGRES_DB}"
-
-      # Understat config
-      LEAGUE: epl
-      SEASON: "2024"
-
-    # You can still load other vars from .env
-    env_file:
-      - .env
-
   db:
     image: postgres:15-alpine
     restart: always
@@ -49,5 +16,30 @@ services:
       timeout: 5s
       retries: 5
 
+  web:
+    build: .
+    entrypoint: ["./entrypoint.sh"]
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # **Critical**: point at the db service hostname
+      DB_HOST: db
+      DB_PORT: 5432
+
+      # credentials & database name
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+
+      # your app config
+      LEAGUE: epl
+      SEASON: "2024"
+
 volumes:
-  pgdata: {}
+  pgdata:
