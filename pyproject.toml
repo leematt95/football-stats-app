@@ -1,0 +1,46 @@
+[tool.black]
+# Black configuration for consistent code formatting
+line-length = 88
+target-version = ['py310']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | venv
+  | __pycache__
+  | \.pytest_cache
+  | pgdata
+  | migrations
+  | app_standalone_backup\.py
+)/
+'''
+
+# Skip string normalization (preserve quote style)
+skip-string-normalization = false
+
+# Enable preview features
+preview = false
+
+[tool.isort]
+# Import sorting configuration to work with black
+profile = "black"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+
+# Known sections
+known_first_party = ["app"]
+known_third_party = ["flask", "sqlalchemy", "psycopg2", "dotenv", "understat", "aiohttp"]
+
+# Exclude files
+skip = [
+    "venv",
+    ".venv", 
+    "__pycache__",
+    "migrations",
+    "app_standalone_backup.py"
+]
