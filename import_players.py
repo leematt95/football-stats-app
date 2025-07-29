@@ -5,6 +5,7 @@ import asyncio
 import logging
 import os
 import sys
+from typing import Dict, List, Optional, Union
 
 import aiohttp
 from dotenv import load_dotenv
@@ -20,7 +21,7 @@ from sqlalchemy import (
 from sqlalchemy import exc as sa_exc
 from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import insert
-from understat import Understat
+from understat import Understat  # type: ignore[import]
 
 # ── Load Environment Variables ─────────────────────────────────────────────
 
@@ -28,16 +29,16 @@ load_dotenv()
 
 # ── Build Database URL ─────────────────────────────────────────────────────
 # Prefer full DATABASE_URL if provided, else compose from parts exactly once
-_database_url = os.getenv("DATABASE_URL")
+_database_url: Optional[str] = os.getenv("DATABASE_URL")
 if _database_url:
-    DB_URL = _database_url
+    db_url: str = _database_url
 else:
-    DB_USER = os.getenv("POSTGRES_USER", "admin")
-    DB_PASS = os.getenv("POSTGRES_PASSWORD", "securepass123")
-    DB_NAME = os.getenv("POSTGRES_DB", "football_db")
-    DB_HOST = os.getenv("DB_HOST", "localhost")
-    DB_PORT = os.getenv("DB_PORT", "5432")
-    DB_URL = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    db_user: str = os.getenv("POSTGRES_USER", "admin")
+    db_pass: str = os.getenv("POSTGRES_PASSWORD", "securepass123")
+    db_name: str = os.getenv("POSTGRES_DB", "football_db")
+    db_host: str = os.getenv("DB_HOST", "localhost")
+    db_port: str = os.getenv("DB_PORT", "5432")
+    db_url = f"postgresql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
 
 # ── Config & Logging ───────────────────────────────────────────────────────
 
@@ -48,25 +49,26 @@ logging.basicConfig(
 logger = logging.getLogger("import_players")
 
 # Validate critical variables
-if not DB_URL:
+if not db_url:
     logger.error("Database URL could not be constructed.")
     sys.exit(1)
-LEAGUE = os.getenv("LEAGUE", "epl")
-SEASON = os.getenv("SEASON", "2025")
+
+league: str = os.getenv("LEAGUE", "epl")
+season_env: str = os.getenv("SEASON", "2025")
 
 # Validate SEASON is integer
 try:
-    SEASON = str(int(SEASON))
+    season: str = str(int(season_env))
 except ValueError:
-    logger.error(f"Invalid SEASON value: {SEASON!r}. Must be integer.")
+    logger.error(f"Invalid SEASON value: {season_env!r}. Must be integer.")
     sys.exit(1)
 
-logger.info(f"Connecting to database: {DB_URL}")
-logger.info(f"League: {LEAGUE}, Season: {SEASON}")
+logger.info(f"Connecting to database: {db_url}")
+logger.info(f"League: {league}, Season: {season}")
 
 # ── Database Schema Setup ──────────────────────────────────────────────────
 
-engine = create_engine(DB_URL, echo=False)
+engine = create_engine(db_url, echo=False)
 metadata = MetaData()
 
 players = Table(
@@ -88,10 +90,10 @@ metadata.create_all(engine)
 # ── Helpers ────────────────────────────────────────────────────────────────
 
 
-def to_int(val):
+def to_int(val: Union[str, int, None]) -> int:
     """Safely convert val to int, defaulting to 0 on failure."""
     try:
-        return int(val)
+        return int(val) if val is not None else 0
     except (TypeError, ValueError):
         return 0
 
@@ -99,18 +101,18 @@ def to_int(val):
 # ── Main Import Logic ──────────────────────────────────────────────────────
 
 
-async def fetch_and_store():
+async def fetch_and_store() -> None:
     try:
         async with aiohttp.ClientSession() as session:
             understat = Understat(session)
-            logger.info(f"Fetching {LEAGUE.upper()} players for season {SEASON}…")
-            data = await understat.get_league_players(LEAGUE, SEASON)
+            logger.info(f"Fetching {league.upper()} players for season {season}…")
+            data = await understat.get_league_players(league, season)
 
         if not data:
             logger.warning("No player data returned; exiting.")
             return
 
-        rows = []
+        rows: List[Dict[str, Union[str, int]]] = []
         for p in data:
             name = p.get("player_name")
             team = p.get("team_title")
