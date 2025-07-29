@@ -1,13 +1,24 @@
 #!/usr/bin/env python3
 # import_players.py
 
-import os
-import sys
 import asyncio
 import logging
+import os
+import sys
+
 import aiohttp
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, TIMESTAMP, func, exc as sa_exc
+from sqlalchemy import (
+    TIMESTAMP,
+    Column,
+    Integer,
+    MetaData,
+    String,
+    Table,
+    create_engine,
+)
+from sqlalchemy import exc as sa_exc
+from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import insert
 from understat import Understat
 
@@ -76,6 +87,7 @@ metadata.create_all(engine)
 
 # ── Helpers ────────────────────────────────────────────────────────────────
 
+
 def to_int(val):
     """Safely convert val to int, defaulting to 0 on failure."""
     try:
@@ -83,7 +95,9 @@ def to_int(val):
     except (TypeError, ValueError):
         return 0
 
+
 # ── Main Import Logic ──────────────────────────────────────────────────────
+
 
 async def fetch_and_store():
     try:
@@ -103,15 +117,17 @@ async def fetch_and_store():
             if not name or not team:
                 logger.warning(f"Skipping invalid entry: {p}")
                 continue
-            rows.append({
-                "name": name,
-                "age": to_int(p.get("age")),
-                "position": p.get("position"),
-                "team": team,
-                "goals": to_int(p.get("goals")),
-                "assists": to_int(p.get("assists")),
-                "nationality": p.get("nationality"),
-            })
+            rows.append(
+                {
+                    "name": name,
+                    "age": to_int(p.get("age")),
+                    "position": p.get("position"),
+                    "team": team,
+                    "goals": to_int(p.get("goals")),
+                    "assists": to_int(p.get("assists")),
+                    "nationality": p.get("nationality"),
+                }
+            )
 
         if not rows:
             logger.warning("No valid player rows to insert; exiting.")
@@ -122,11 +138,13 @@ async def fetch_and_store():
             upsert = stmt.on_conflict_do_update(
                 index_elements=["name"],
                 set_={
-                    **{c.name: getattr(stmt.excluded, c.name)
-                       for c in players.columns
-                       if c.name not in ("id", "last_updated")},
-                    "last_updated": func.now()
-                }
+                    **{
+                        c.name: getattr(stmt.excluded, c.name)
+                        for c in players.columns
+                        if c.name not in ("id", "last_updated")
+                    },
+                    "last_updated": func.now(),
+                },
             )
             conn.execute(upsert)
 
@@ -138,6 +156,7 @@ async def fetch_and_store():
         logger.error(f"Database error during upsert: {e}")
     except Exception as e:
         logger.exception(f"Unexpected error: {e}")
+
 
 if __name__ == "__main__":
     logger.info("Starting import_players.py")
