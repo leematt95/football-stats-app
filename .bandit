@@ -1,0 +1,43 @@
+[bandit]
+# Bandit configuration file for security linting
+
+# Exclude paths
+exclude_dirs = [
+    "venv",
+    ".venv", 
+    "env",
+    ".env",
+    "__pycache__",
+    ".git",
+    "pgdata",
+    "migrations"
+]
+
+# Skip specific test IDs
+skips = [
+    # B101: Test for use of assert - we allow asserts in non-production code
+    "B101",
+    # B601: Paramiko calls - if we use SSH libraries
+    "B601"
+]
+
+# Tests to run (empty means run all except skipped)
+tests = []
+
+# Confidence levels to report
+# LOW, MEDIUM, HIGH
+confidence = ["HIGH", "MEDIUM"]
+
+# Severity levels to report  
+# LOW, MEDIUM, HIGH
+level = ["MEDIUM", "HIGH"]
+
+# Output format
+# Available: csv, json, txt, xml, yaml
+format = "txt"
+
+# Include full path in output
+absolute_paths = false
+
+# Aggregate output by file
+aggregate = "file"
