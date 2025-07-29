@@ -1,0 +1,91 @@
+# Pre-commit configuration for automated code quality checks
+# Run 'pre-commit install' to set up the git hook
+# Run 'pre-commit run --all-files' to run on all files
+
+repos:
+  # Black - code formatting
+  - repo: https://github.com/psf/black
+    rev: 24.1.1
+    hooks:
+      - id: black
+        args: [--line-length=88]
+        exclude: ^(venv/|pgdata/|migrations/|app_standalone_backup\.py)
+
+  # isort - import sorting
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: [--profile=black, --line-length=88]
+        exclude: ^(venv/|pgdata/|migrations/|app_standalone_backup\.py)
+
+  # Flake8 - style and syntax checking
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+        exclude: ^(venv/|pgdata/|migrations/|app_standalone_backup\.py)
+        additional_dependencies: [
+          flake8-docstrings,
+          flake8-import-order,
+          flake8-bugbear
+        ]
+
+  # MyPy - static type checking
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      - id: mypy
+        exclude: ^(venv/|pgdata/|migrations/|app_standalone_backup\.py)
+        additional_dependencies: [
+          types-requests,
+          types-flask,
+          sqlalchemy[mypy]
+        ]
+
+  # Bandit - security linting
+  - repo: https://github.com/pycqa/bandit
+    rev: 1.7.5
+    hooks:
+      - id: bandit
+        args: [-r, -x, "venv,pgdata,migrations,app_standalone_backup.py"]
+        exclude: ^(venv/|pgdata/|migrations/|app_standalone_backup\.py)
+
+  # General pre-commit hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      # Check for common issues
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      
+      # Python-specific
+      - id: check-docstring-first
+      - id: debug-statements
+      - id: requirements-txt-fixer
+
+  # Docker and other file checks
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint-docker
+        args: [--ignore, DL3008, --ignore, DL3009]
+
+# Global settings
+default_language_version:
+  python: python3.10
+
+# Files to exclude globally
+exclude: ^(venv/|\.venv/|pgdata/|migrations/|app_standalone_backup\.py|\.git/)
+
+# Fail fast - stop on first failure
+fail_fast: false
+
+# Minimum pre-commit version
+minimum_pre_commit_version: "3.0.0"
