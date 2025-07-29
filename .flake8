@@ -1,0 +1,44 @@
+[flake8]
+# Maximum line length
+max-line-length = 88
+
+# Exclude specific files and directories
+exclude = 
+    .git,
+    __pycache__,
+    venv,
+    .venv,
+    env,
+    .env,
+    pgdata,
+    app_standalone_backup.py,
+    migrations
+
+# Error codes to ignore
+ignore = 
+    # E203: whitespace before ':' (conflicts with black)
+    E203,
+    # W503: line break before binary operator (conflicts with black)
+    W503,
+    # E501: line too long (handled by black)
+    E501
+
+# Enable specific error codes
+select = E,W,F,C
+
+# Maximum complexity for McCabe complexity checker
+max-complexity = 10
+
+# Import order checking
+import-order-style = google
+application-import-names = app
+
+# Inline ignore comments
+inline-quotes = double
+
+# Per-file ignore patterns
+per-file-ignores =
+    # Ignore unused imports in __init__.py files
+    __init__.py:F401
+    # Ignore line length in import_players.py (has long URLs)
+    import_players.py:E501
