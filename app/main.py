@@ -1,13 +1,20 @@
-from flask import Flask
-from dotenv import load_dotenv
-import os
 import logging
-from flask_sqlalchemy import SQLAlchemy
+import os
+
+from dotenv import load_dotenv
+from flask import Flask
 from flask_migrate import Migrate
+
 # ----------------------------------------
 # Load environment variables from .env
 # ----------------------------------------
 load_dotenv()  # Load environment variables from .env file
+
+# ----------------------------------------
+# Import database and routes after load_dotenv
+# ----------------------------------------
+from app.models.player import db  # SQLAlchemy instance  # noqa: E402
+from app.routes.players import players_bp  # noqa: E402
 
 # ----------------------------------------
 # Create Flask app instance
@@ -22,17 +29,6 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["DEBUG"] = os.getenv("DEBUG", "False").lower() == "true"
 
 # ----------------------------------------
-# Initialize database
-# ----------------------------------------
-from app.models.player import db          # SQLAlchemy instance
-db.init_app(app)
-
-# ----------------------------------------
-# Import routes after app creation
-# ----------------------------------------
-from app.routes.players import players_bp
-
-# ----------------------------------------
 # Logging setup
 # ----------------------------------------
 log_level = os.getenv("LOG_LEVEL", "INFO").upper()
@@ -41,26 +37,33 @@ logging.basicConfig(
     level=log_level,
     format=log_format,
     handlers=[
-        logging.StreamHandler(),               # Send logs to STDOUT
-        logging.FileHandler(os.getenv("LOG_FILE", "app.log"))  # Write logs to file
-    ]
+        logging.StreamHandler(),  # Send logs to STDOUT
+        logging.FileHandler(os.getenv("LOG_FILE", "app.log")),  # Write logs to file
+    ],
 )
 logger = logging.getLogger(__name__)
 
 # ----------------------------------------
-# Initialize database
+# Initialize database (only once!)
 # ----------------------------------------
 db.init_app(app)
 migrate = Migrate(app, db)
 
-# Create tables if they don't exist
+# Create tables if they don't exist (safer approach)
 with app.app_context():
-    db.create_all()
+    try:
+        # Only create tables if they don't exist
+        db.create_all()
+        logger.info("Database tables verified/created successfully")
+    except Exception as e:
+        logger.error(f"Database initialization error: {e}")
+        # In production, you might want to exit here
 
 # ----------------------------------------
 # Register Blueprint for modular routes
 # ----------------------------------------
 app.register_blueprint(players_bp, url_prefix="/api/players")
+
 
 # ----------------------------------------
 # Root route for sanity checks
@@ -70,8 +73,10 @@ def index():
     logger.info("Index route accessed")
     return {"message": "🏟 Welcome to the Football Stats API! 🏟"}, 200
 
+
 # ----------------------------------------
 # Run the application (if not using Docker)
 # ----------------------------------------
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    # Bind to all interfaces for development - use reverse proxy in production
+    app.run(host="0.0.0.0", port=5000)  # nosec B104
