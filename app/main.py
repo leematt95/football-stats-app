@@ -46,7 +46,13 @@ logger = logging.getLogger(__name__)
 # ----------------------------------------
 # Initialize database (only once!)
 # ----------------------------------------
-db.init_app(app)
+# Check if db is already initialized to prevent duplicate registration
+if not hasattr(db, 'app') or db.app is None:
+    db.init_app(app)
+    logger.info("SQLAlchemy initialized with Flask app")
+else:
+    logger.info("SQLAlchemy already initialized, skipping")
+
 migrate = Migrate(app, db)
 
 # Create tables if they don't exist (safer approach)
