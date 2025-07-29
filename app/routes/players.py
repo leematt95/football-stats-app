@@ -22,10 +22,17 @@ players_bp = Blueprint("players", __name__)
 def get_players() -> Tuple[Response, int]:
     try:
         name_query = request.args.get("name")
+        limit = request.args.get("limit", type=int)
+        
         if name_query:
-            players = Player.query.filter(Player.name.ilike(f"%{name_query}%")).all()  # type: ignore[attr-defined]
+            query = Player.query.filter(Player.name.ilike(f"%{name_query}%"))  # type: ignore[attr-defined]
         else:
-            players = Player.query.all()  # type: ignore[attr-defined]
+            query = Player.query  # type: ignore[attr-defined]
+        
+        if limit:
+            query = query.limit(limit)
+            
+        players = query.all()
         return jsonify([player.to_dict() for player in players]), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -38,8 +45,10 @@ def get_players() -> Tuple[Response, int]:
 @players_bp.route("/<int:player_id>", methods=["GET"])
 def get_player(player_id: int) -> Tuple[Response, int]:
     try:
-        player = Player.query.get_or_404(player_id)  # type: ignore[attr-defined]
-        return jsonify(player.to_dict()), 200
+        player = Player.query.get(player_id)  # type: ignore[attr-defined]
+        if player is None:
+            return jsonify({"error": "Player not found"}), 404
+        return jsonify(player.to_dict()), 200  # type: ignore[attr-defined]
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
