@@ -1,7 +1,128 @@
+# ===========================================
+# Professional .gitignore for Football Stats API
+# Keep only essential code and documentation
+# ===========================================
+
+# Python
 __pycache__/
-*.pyc
-.env
-*.sqlite3
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
 venv/
-rm .env.save.env.save
+env/
+ENV/
+.venv
+.env/
+
+# Environment & Secrets
+.env
+.env.local
+.env.production
+.env.save*
+*.pem
+*.key
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+pgdata/
+postgres_data/
+
+# Logs & Monitoring
 *.log
+logs/
+app.log*
+
+# Docker & Containers
+.dockerignore.bak
+
+# IDE & Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Testing
+.coverage
+.pytest_cache/
+.tox/
+.nox/
+htmlcov/
+.coverage.*
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# ===========================================
+# INTERVIEW/DEMO FILES TO EXCLUDE
+# (Keep repository clean and professional)
+# ===========================================
+
+# Internal testing and analysis files
+PROBLEMS_ANALYSIS.md
+PROBLEMS_FIXED.md
+FINAL_ANALYSIS.md
+DEMO_STATUS_REPORT.md
+API_TESTING_REPORT.md
+SHELL_ESCAPING_REPORT.md
+LINTING.md
+
+# Demo and presentation scripts
+DEMO_SCRIPT.md
+INTERVIEW_PRESENTATION_GUIDE.md
+demo_shell_escaping.sh
+run_api_tests.sh
+
+# Backup and standalone files
+app_standalone_backup.py
+structure.txt
+
+# Testing scripts (keep only essential tests)
+test_shell_escaping.py
+test_load_testing.py
+test_understat.py
+
+# Development utilities
+lint.sh
+demo_shell_escaping.sh
+
+# ===========================================
+# KEEP THESE ESSENTIAL FILES FOR GITHUB:
+# - README.md
+# - docker-compose.yml
+# - Dockerfile
+# - requirements.txt
+# - app/ directory
+# - test_api_runtime.py (main test)
+# - test_api_pytest.py (pytest suite)
+# - openshift-deployment.yaml
+# - REDHAT_INTEGRATION_STRATEGY.md
+# - Makefile
+# - entrypoint.sh
+# - wsgi.py
+# ===========================================
