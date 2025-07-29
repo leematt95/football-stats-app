@@ -1,5 +1,8 @@
-# Use a lightweight official Python image as the base
-FROM python:3.10-slim
+# Use Python 3.11 for better performance and security
+FROM python:3.11-slim
+
+# Create non-root user for security
+RUN useradd --create-home --shell /bin/bash app
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -12,15 +15,21 @@ RUN apt-get update && \
       postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy and install Python dependencies
+# Copy and install Python dependencies first (for better caching)
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code
 COPY app/         ./app/
 COPY import_players.py .
+COPY wsgi.py .
 COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
+
+# Change ownership to app user
+RUN chown -R app:app /app
+USER app
 
 # Expose the Flask port
 EXPOSE 5000
