@@ -12,7 +12,8 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       gcc \
       libpq-dev \
-      postgresql-client && \
+      postgresql-client \
+      curl && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy and install Python dependencies first (for better caching)

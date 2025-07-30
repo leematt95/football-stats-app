@@ -76,12 +76,18 @@ players = Table(
     metadata,
     Column("id", Integer, primary_key=True),
     Column("name", String, nullable=False, unique=True),
-    Column("age", Integer),
     Column("position", String),
     Column("team", String),
     Column("goals", Integer),
     Column("assists", Integer),
-    Column("nationality", String),
+    Column("games", Integer),
+    Column("minutes", Integer),
+    Column("xg", String),  # Expected goals (decimal)
+    Column("xa", String),  # Expected assists (decimal)
+    Column("shots", Integer),
+    Column("key_passes", Integer),
+    Column("yellow_cards", Integer),
+    Column("red_cards", Integer),
     Column("last_updated", TIMESTAMP, server_default=func.now(), nullable=False),
 )
 # Create table if not exists
@@ -122,12 +128,18 @@ async def fetch_and_store() -> None:
             rows.append(
                 {
                     "name": name,
-                    "age": to_int(p.get("age")),
                     "position": p.get("position"),
                     "team": team,
                     "goals": to_int(p.get("goals")),
                     "assists": to_int(p.get("assists")),
-                    "nationality": p.get("nationality"),
+                    "games": to_int(p.get("games")),
+                    "minutes": to_int(p.get("time")),  # 'time' field is minutes played
+                    "xg": p.get("xG"),  # Keep as string for precision
+                    "xa": p.get("xA"),  # Keep as string for precision
+                    "shots": to_int(p.get("shots")),
+                    "key_passes": to_int(p.get("key_passes")),
+                    "yellow_cards": to_int(p.get("yellow_cards")),
+                    "red_cards": to_int(p.get("red_cards")),
                 }
             )
 
