@@ -90,12 +90,22 @@ coverage.xml
 # (Keep repository clean and professional)
 # ===========================================
 
-# Interview preparation materials (Keep Private)
+# Interview materials (private)
 interview-prep/
-*INTERVIEW*.md
-*FEEDBACK*.md
-*STRATEGY*.md
-*EXTRACTION*.md
+docs/
+
+# Environment and logs
+.env
+*.log
+
+# CI/CD and testing artifacts
+bandit-report.json
+safety-report.json
+pytest-results.xml
+coverage.xml
+.coverage
+.pytest_cache/
+htmlcov/
 
 # Development documentation and analysis
 docs/DEMO_STATUS_REPORT.md
