@@ -144,9 +144,12 @@ class APITestSuite:
             )
             if success and isinstance(data, list) and len(data) > 0:
                 player = data[0]
-                print(
-                    f"   └─ Found: {player.get('name', 'Unknown')} ({player.get('team', 'Unknown')})"
-                )
+                if 'Name' not in player or 'Club' not in player:
+                    print(f"   ❌ Missing required fields in player data: {list(player.keys())}")
+                else:
+                    print(
+                        f"   └─ Found: {player['Name']} ({player['Club']})"
+                    )
 
         # Test search with no results
         self.test_endpoint(
@@ -161,7 +164,10 @@ class APITestSuite:
             "GET", "/api/players/1", test_name="Get player by ID (1)"
         )
         if success and "name" in data:
-            print(f"   └─ Player 1: {data['name']} ({data.get('team', 'Unknown')})")
+            if data and 'Name' in data:
+                print(f"   └─ Player 1: {data['Name']} ({data['Club']})")
+            else:
+                print(f"   ❌ Missing required fields in player data: {list(data.keys()) if data else 'No data'}")
 
         # Test invalid player ID
         self.test_endpoint(
@@ -223,10 +229,17 @@ class APITestSuite:
         )
 
         if success and isinstance(data, dict):
-            total_items = data.get("total_items", 0)
-            total_pages = data.get("total_pages", 0)
-            current_page = data.get("current_page", 0)
-            players = data.get("players", [])
+            required_fields = ["total_items", "total_pages", "current_page", "players"]
+            missing_fields = [field for field in required_fields if field not in data]
+            
+            if missing_fields:
+                print(f"   ❌ Missing required pagination fields: {missing_fields}")
+                return
+                
+            total_items = data["total_items"]
+            total_pages = data["total_pages"]
+            current_page = data["current_page"]
+            players = data["players"]
 
             print(f"   └─ Total items: {total_items}")
             print(f"   └─ Total pages: {total_pages}")

@@ -14,10 +14,6 @@ logger = logging.getLogger(__name__)
 players_bp = Blueprint("players", __name__)
 
 
-# ——————————————————————————————————————————
-# Read all players or search by name
-# URL: GET /api/players/?name=<substring>
-# ——————————————————————————————————————————
 @players_bp.route("/", methods=["GET"])
 def get_players() -> Tuple[Response, int]:
     try:
@@ -38,10 +34,6 @@ def get_players() -> Tuple[Response, int]:
         return jsonify({"error": str(e)}), 500
 
 
-# ——————————————————————————————————————————
-# Read single player by ID
-# URL: GET /api/players/<int:player_id>
-# ——————————————————————————————————————————
 @players_bp.route("/<int:player_id>", methods=["GET"])
 def get_player(player_id: int) -> Tuple[Response, int]:
     try:
@@ -53,10 +45,6 @@ def get_player(player_id: int) -> Tuple[Response, int]:
         return jsonify({"error": str(e)}), 500
 
 
-# ——————————————————————————————————————————
-# Search players by name (JSON response)
-# URL: GET /api/players/search?name=<substring>
-# ——————————————————————————————————————————
 @players_bp.route("/search/json", methods=["GET"])
 def search_players_json() -> Tuple[Response, int]:
     name_query = request.args.get("name")
@@ -79,15 +67,19 @@ def search_players_html() -> str:
     return render_template("search.html", players=players, name_query=name_query)
 
 
-# ——————————————————————————————————————————
-# Add pagination to GET /api/players/
-# URL: GET /api/players/paginated?page=<page>&per_page=<per_page>
-# ——————————————————————————————————————————
 @players_bp.route("/paginated", methods=["GET"])
 def get_players_paginated() -> Tuple[Response, int]:
     try:
-        page = request.args.get("page", 1, type=int)
-        per_page = request.args.get("per_page", 10, type=int)
+        page_param = request.args.get("page", type=int)
+        per_page_param = request.args.get("per_page", type=int)
+        
+        if page_param is None:
+            return jsonify({"error": "Missing required parameter: page"}), 400
+        if per_page_param is None:
+            return jsonify({"error": "Missing required parameter: per_page"}), 400
+            
+        page = page_param
+        per_page = per_page_param
         name_query = request.args.get("name")
         if name_query:
             pagination = Player.query.filter(  # type: ignore[attr-defined]

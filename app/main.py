@@ -43,46 +43,24 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# ----------------------------------------
-# Initialize database (only once!)
-# ----------------------------------------
-# Check if db is already initialized to prevent duplicate registration
-if not hasattr(db, "app") or db.app is None:
-    db.init_app(app)
-    logger.info("SQLAlchemy initialized with Flask app")
-else:
-    logger.info("SQLAlchemy already initialized, skipping")
-
+db.init_app(app)
 migrate = Migrate(app, db)
 
-# Create tables if they don't exist (safer approach)
 with app.app_context():
     try:
-        # Only create tables if they don't exist
         db.create_all()
         logger.info("Database tables verified/created successfully")
     except Exception as e:
         logger.error(f"Database initialization error: {e}")
-        # In production, you might want to exit here
 
-# ----------------------------------------
-# Register Blueprint for modular routes
-# ----------------------------------------
 app.register_blueprint(players_bp, url_prefix="/api/players")
 
 
-# ----------------------------------------
-# Root route for sanity checks
-# ----------------------------------------
 @app.route("/")
 def index():
     logger.info("Index route accessed")
     return {"message": "🏟 Welcome to the Football Stats API! 🏟"}, 200
 
 
-# ----------------------------------------
-# Run the application (if not using Docker)
-# ----------------------------------------
 if __name__ == "__main__":
-    # Bind to all interfaces for development - use reverse proxy in production
     app.run(host="0.0.0.0", port=5000)  # nosec B104

@@ -97,11 +97,10 @@ metadata.create_all(engine)
 
 
 def to_int(val: Union[str, int, None]) -> int:
-    """Safely convert val to int, defaulting to 0 on failure."""
-    try:
-        return int(val) if val is not None else 0
-    except (TypeError, ValueError):
-        return 0
+    """Convert val to int, raising ValueError for invalid data."""
+    if val is None:
+        raise ValueError("Cannot convert None to integer")
+    return int(val)
 
 
 # ── Main Import Logic ──────────────────────────────────────────────────────

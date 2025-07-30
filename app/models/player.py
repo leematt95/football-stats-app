@@ -34,13 +34,17 @@ class Player(db.Model):  # type: ignore[name-defined]
             "D": "Defender",
             "M": "Midfielder",
             "F": "Forward",
+            "S": "Substitute",  # Added missing position code
         }
 
         # Handle multiple positions (e.g., "F M", "D S")
         positions = position.split()
         expanded = []
         for pos in positions:
-            expanded.append(position_map.get(pos.strip(), pos.strip()))
+            mapped_pos = position_map.get(pos.strip())
+            if mapped_pos is None:
+                raise ValueError(f"Unknown position code: {pos.strip()}")
+            expanded.append(mapped_pos)
 
         return " / ".join(expanded)
 
