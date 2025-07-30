@@ -63,7 +63,14 @@ app.log*
 *.swp
 *.swo
 *~
+
+# macOS System Files (Keep Out!)
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 
 # Testing
@@ -83,33 +90,32 @@ coverage.xml
 # (Keep repository clean and professional)
 # ===========================================
 
-# Internal testing and analysis files
-PROBLEMS_ANALYSIS.md
-PROBLEMS_FIXED.md
-FINAL_ANALYSIS.md
-DEMO_STATUS_REPORT.md
-API_TESTING_REPORT.md
-SHELL_ESCAPING_REPORT.md
-LINTING.md
+# Interview preparation materials (Keep Private)
+interview-prep/
+*INTERVIEW*.md
+*FEEDBACK*.md
+*STRATEGY*.md
+*EXTRACTION*.md
 
-# Demo and presentation scripts
-DEMO_SCRIPT.md
-INTERVIEW_PRESENTATION_GUIDE.md
-demo_shell_escaping.sh
-run_api_tests.sh
+# Development documentation and analysis
+docs/DEMO_STATUS_REPORT.md
+docs/FINAL_ANALYSIS.md
+docs/LINTING.md
+docs/PROBLEMS_ANALYSIS.md
+docs/PROBLEMS_FIXED.md
+docs/API_TESTING_REPORT.md
+docs/SHELL_ESCAPING_REPORT.md
+docs/app_standalone_backup.py
+docs/structure.txt
+docs/test_load_testing.py
+docs/test_shell_escaping.py
+docs/test_understat.py
 
-# Backup and standalone files
-app_standalone_backup.py
-structure.txt
+# Utility scripts
+scripts/
 
-# Testing scripts (keep only essential tests)
-test_shell_escaping.py
-test_load_testing.py
-test_understat.py
-
-# Development utilities
-lint.sh
-demo_shell_escaping.sh
+# Project organization guide (keep local)
+PROJECT_STRUCTURE.md
 
 # ===========================================
 # KEEP THESE ESSENTIAL FILES FOR GITHUB:
