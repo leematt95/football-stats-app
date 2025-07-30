@@ -25,6 +25,7 @@ typing_extensions==4.14.0
 # Data scraping dependencies
 aiohttp
 understat
+requests==2.31.0
 
 # Development and linting tools
 mypy==1.8.0
@@ -33,6 +34,9 @@ bandit==1.7.5
 black==24.1.1
 isort==5.13.2
 pre-commit==3.6.0
+pytest==8.4.1
+pytest-cov==6.0.0
+pytest-mock==3.14.0
 
 # Production server
 gunicorn==21.2.0

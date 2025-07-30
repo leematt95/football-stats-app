@@ -81,7 +81,8 @@ jobs:
     - name: 🛡️ Dependency Security Check (Safety)
       run: |
         echo "::group::🛡️ Dependency Security Check"
-        safety check --json --output safety-report.json || (
+        pip install safety
+        safety check --json --output safety-report.json --continue-on-error || (
           echo "⚠️ Vulnerable dependencies detected!"
           echo "📋 Check safety-report.json for details"
         )
@@ -167,7 +168,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest pytest-cov pytest-mock
+        pip install pytest pytest-cov pytest-mock requests
         
     - name: ⚙️ Configure Test Environment
       run: |
@@ -222,11 +223,17 @@ jobs:
           pytest-results.xml
           coverage.xml
           
-    - name: 📈 Coverage Comment
-      if: github.event_name == 'pull_request'
-      uses: py-cov-action/python-coverage-comment-action@v3
-      with:
-        GITHUB_TOKEN: ${{ github.token }}
+    - name: 📈 Generate Coverage Report
+      if: always()
+      run: |
+        echo "::group::📈 Coverage Summary"
+        echo "Coverage report generated and saved as artifact"
+        if [ -f coverage.xml ]; then
+          echo "✅ Coverage XML report created"
+        else
+          echo "⚠️ Coverage XML report not found"
+        fi
+        echo "::endgroup::"
 
   # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   # 🐳 Docker Build & Test

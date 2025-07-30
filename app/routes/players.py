@@ -23,15 +23,15 @@ def get_players() -> Tuple[Response, int]:
     try:
         name_query = request.args.get("name")
         limit = request.args.get("limit", type=int)
-        
+
         if name_query:
             query = Player.query.filter(Player.name.ilike(f"%{name_query}%"))  # type: ignore[attr-defined]
         else:
             query = Player.query  # type: ignore[attr-defined]
-        
+
         if limit:
             query = query.limit(limit)
-            
+
         players = query.all()
         return jsonify([player.to_dict() for player in players]), 200
     except Exception as e:

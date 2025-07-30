@@ -18,8 +18,7 @@ RUN apt-get update && \
 
 # Copy and install Python dependencies first (for better caching)
 COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --timeout=60 --retries=3 -r requirements.txt
 
 # Copy the application code
 COPY app/         ./app/

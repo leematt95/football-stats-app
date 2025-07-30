@@ -47,7 +47,7 @@ logger = logging.getLogger(__name__)
 # Initialize database (only once!)
 # ----------------------------------------
 # Check if db is already initialized to prevent duplicate registration
-if not hasattr(db, 'app') or db.app is None:
+if not hasattr(db, "app") or db.app is None:
     db.init_app(app)
     logger.info("SQLAlchemy initialized with Flask app")
 else:

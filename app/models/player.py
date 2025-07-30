@@ -28,20 +28,20 @@ class Player(db.Model):  # type: ignore[name-defined]
         """Convert position abbreviations to full names"""
         if not position:
             return "Unknown"
-        
+
         position_map = {
             "GK": "Goalkeeper",
-            "D": "Defender", 
+            "D": "Defender",
             "M": "Midfielder",
-            "F": "Forward"
+            "F": "Forward",
         }
-        
+
         # Handle multiple positions (e.g., "F M", "D S")
         positions = position.split()
         expanded = []
         for pos in positions:
             expanded.append(position_map.get(pos.strip(), pos.strip()))
-        
+
         return " / ".join(expanded)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -60,7 +60,9 @@ class Player(db.Model):  # type: ignore[name-defined]
             "Key_Passes": self.key_passes,
             "Yellow_Cards": self.yellow_cards,
             "Red_Cards": self.red_cards,
-            "Last_Updated": self.last_updated.isoformat() if self.last_updated else None,
+            "Last_Updated": (
+                self.last_updated.isoformat() if self.last_updated else None
+            ),
         }
 
     def __repr__(self):
