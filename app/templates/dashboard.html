@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Stats Platform - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c5530;
+            --secondary-color: #4a7c59;
+            --accent-color: #7fb069;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --dark-color: #343a40;
+            --light-color: #f8f9fa;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--light-color) 0%, #e9ecef 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .search-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .player-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            border-left: 4px solid var(--accent-color);
+            transition: all 0.3s ease;
+        }
+
+        .player-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+        }
+
+        .metric-badge {
+            background: var(--accent-color);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0.2rem;
+        }
+
+        .position-badge {
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #f5c6cb;
+            margin: 1rem 0;
+        }
+
+        .api-info {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #c3e6cb;
+            margin: 1rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 2rem 0;
+            }
+            
+            .search-container {
+                padding: 1.5rem 1rem;
+            }
+            
+            .stats-card {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="fas fa-futbol me-2"></i>
+                Football Stats Platform
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#search">Search Players</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#api">API Docs</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold mb-3">
+                <i class="fas fa-chart-line me-3"></i>
+                Premier League Analytics
+            </h1>
+            <p class="lead mb-4">
+                Real-time player statistics, advanced analytics, and comprehensive performance metrics
+            </p>
+            <div class="row justify-content-center">
+                <div class="col-md-4">
+                    <div class="stats-card text-dark">
+                        <h3 class="text-primary mb-1" id="totalPlayers">-</h3>
+                        <p class="mb-0">Active Players</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card text-dark">
+                        <h3 class="text-success mb-1">20</h3>
+                        <p class="mb-0">Premier League Clubs</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card text-dark">
+                        <h3 class="text-warning mb-1">15</h3>
+                        <p class="mb-0">Statistical Fields</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Search Section -->
+        <div id="search" class="search-container">
+            <h2 class="mb-4">
+                <i class="fas fa-search me-2"></i>
+                Player Search
+            </h2>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <input type="text" 
+                               class="form-control form-control-lg" 
+                               id="playerSearch" 
+                               placeholder="Enter player name (e.g., Haaland, Salah, Kane...)"
+                               onkeypress="handleKeyPress(event)">
+                        <button class="btn btn-primary btn-lg" 
+                                type="button" 
+                                onclick="searchPlayers()">
+                            <i class="fas fa-search me-2"></i>Search
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">
+                            <i class="fas fa-list"></i>
+                        </span>
+                        <select class="form-select form-select-lg" id="limitSelect">
+                            <option value="10">Top 10 Results</option>
+                            <option value="20">Top 20 Results</option>
+                            <option value="50">Top 50 Results</option>
+                            <option value="">All Results</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-12">
+                    <button class="btn btn-outline-secondary me-2" onclick="loadTopScorers()">
+                        <i class="fas fa-trophy me-1"></i>Top Scorers
+                    </button>
+                    <button class="btn btn-outline-secondary me-2" onclick="loadTopAssists()">
+                        <i class="fas fa-hands-helping me-1"></i>Top Assists
+                    </button>
+                    <button class="btn btn-outline-secondary me-2" onclick="loadAllPlayers()">
+                        <i class="fas fa-users me-1"></i>All Players
+                    </button>
+                    <button class="btn btn-outline-info" onclick="clearResults()">
+                        <i class="fas fa-eraser me-1"></i>Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div class="loading-spinner" id="loadingSpinner">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Fetching player data...</p>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsContainer" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 id="resultsTitle">Search Results</h3>
+                <span class="badge bg-primary fs-6" id="resultsCount">0 players found</span>
+            </div>
+            <div id="playerResults"></div>
+        </div>
+
+        <!-- API Information -->
+        <div id="api" class="api-info mt-4">
+            <h4><i class="fas fa-code me-2"></i>API Endpoints</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Available Endpoints:</h6>
+                    <ul class="list-unstyled">
+                        <li><code>GET /api/players/</code> - All players</li>
+                        <li><code>GET /api/players/?name=search</code> - Search players</li>
+                        <li><code>GET /api/players/{id}</code> - Specific player</li>
+                        <li><code>GET /api/players/?limit=N</code> - Limited results</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6>Example Usage:</h6>
+                    <pre><code>curl "http://localhost:5000/api/players/?name=haaland&limit=5"</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center mt-5 py-4 bg-light">
+        <div class="container">
+            <p class="text-muted mb-0">
+                <i class="fas fa-futbol me-2"></i>
+                Built with Flask, PostgreSQL, Docker and a passion for Premier League football
+                <i class="fas fa-heart text-danger mx-2"></i>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // API base URL
+        const API_BASE = '/api/players';
+        
+        // Load total players count on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTotalPlayers();
+        });
+
+        async function loadTotalPlayers() {
+            try {
+                const response = await fetch(`${API_BASE}/`);
+                const players = await response.json();
+                document.getElementById('totalPlayers').textContent = players.length;
+            } catch (error) {
+                console.error('Error loading total players:', error);
+                document.getElementById('totalPlayers').textContent = '562+';
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                searchPlayers();
+            }
+        }
+
+        async function searchPlayers() {
+            const searchTerm = document.getElementById('playerSearch').value.trim();
+            const limit = document.getElementById('limitSelect').value;
+            
+            if (!searchTerm) {
+                showError('Please enter a player name to search');
+                return;
+            }
+
+            showLoading(true);
+            hideError();
+
+            try {
+                let url = `${API_BASE}/?name=${encodeURIComponent(searchTerm)}`;
+                if (limit) {
+                    url += `&limit=${limit}`;
+                }
+
+                const response = await fetch(url);
+                const players = await response.json();
+
+                if (response.ok) {
+                    displayResults(players, `Search results for "${searchTerm}"`);
+                } else {
+                    showError(players.error || 'Error searching players');
+                }
+            } catch (error) {
+                showError('Network error: Unable to connect to the API');
+                console.error('Search error:', error);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function loadTopScorers() {
+            showLoading(true);
+            hideError();
+
+            try {
+                const response = await fetch(`${API_BASE}/?limit=20`);
+                const players = await response.json();
+
+                if (response.ok) {
+                    // Sort by goals descending
+                    const topScorers = players.sort((a, b) => b.Goals - a.Goals);
+                    displayResults(topScorers, 'Top Goal Scorers');
+                } else {
+                    showError('Error loading top scorers');
+                }
+            } catch (error) {
+                showError('Network error: Unable to load top scorers');
+                console.error('Load error:', error);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function loadTopAssists() {
+            showLoading(true);
+            hideError();
+
+            try {
+                const response = await fetch(`${API_BASE}/?limit=20`);
+                const players = await response.json();
+
+                if (response.ok) {
+                    // Sort by assists descending
+                    const topAssists = players.sort((a, b) => b.Assists - a.Assists);
+                    displayResults(topAssists, 'Top Assist Providers');
+                } else {
+                    showError('Error loading top assists');
+                }
+            } catch (error) {
+                showError('Network error: Unable to load top assists');
+                console.error('Load error:', error);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function loadAllPlayers() {
+            const limit = document.getElementById('limitSelect').value || '50';
+            showLoading(true);
+            hideError();
+
+            try {
+                const response = await fetch(`${API_BASE}/?limit=${limit}`);
+                const players = await response.json();
+
+                if (response.ok) {
+                    displayResults(players, `All Players (Top ${limit})`);
+                } else {
+                    showError('Error loading players');
+                }
+            } catch (error) {
+                showError('Network error: Unable to load players');
+                console.error('Load error:', error);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function displayResults(players, title) {
+            const resultsContainer = document.getElementById('resultsContainer');
+            const resultsTitle = document.getElementById('resultsTitle');
+            const resultsCount = document.getElementById('resultsCount');
+            const playerResults = document.getElementById('playerResults');
+
+            resultsTitle.textContent = title;
+            resultsCount.textContent = `${players.length} players found`;
+
+            let html = '';
+            players.forEach(player => {
+                html += createPlayerCard(player);
+            });
+
+            playerResults.innerHTML = html;
+            resultsContainer.style.display = 'block';
+            
+            // Scroll to results
+            resultsContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function createPlayerCard(player) {
+            return `
+                <div class="player-card">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <h5 class="mb-1 text-primary">${player.Name}</h5>
+                            <span class="position-badge">${player.Position}</span>
+                        </div>
+                        <div class="col-md-2">
+                            <strong class="text-secondary">${player.Club}</strong>
+                            <br>
+                            <small class="text-muted">${player.Matches} matches</small>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="d-flex flex-wrap align-items-center">
+                                <span class="metric-badge">⚽ ${player.Goals} goals</span>
+                                <span class="metric-badge">🎯 ${player.Assists} assists</span>
+                                <span class="metric-badge">📊 ${player.Expected_Goals?.toFixed(1) || 'N/A'} xG</span>
+                                <span class="metric-badge">📈 ${player.Expected_Assists?.toFixed(1) || 'N/A'} xA</span>
+                                <span class="metric-badge">⏱️ ${player.Minutes}min</span>
+                                ${player.Yellow_Cards ? `<span class="metric-badge" style="background-color: #ffc107;">🟡 ${player.Yellow_Cards}</span>` : ''}
+                                ${player.Red_Cards ? `<span class="metric-badge" style="background-color: #dc3545;">🔴 ${player.Red_Cards}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function clearResults() {
+            document.getElementById('resultsContainer').style.display = 'none';
+            document.getElementById('playerSearch').value = '';
+            hideError();
+        }
+
+        function showLoading(show) {
+            const spinner = document.getElementById('loadingSpinner');
+            spinner.style.display = show ? 'block' : 'none';
+        }
+
+        function showError(message) {
+            const existingError = document.querySelector('.error-message');
+            if (existingError) {
+                existingError.remove();
+            }
+
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i>${message}`;
+            
+            const searchContainer = document.querySelector('.search-container');
+            searchContainer.appendChild(errorDiv);
+        }
+
+        function hideError() {
+            const existingError = document.querySelector('.error-message');
+            if (existingError) {
+                existingError.remove();
+            }
+        }
+    </script>
+</body>
+</html>

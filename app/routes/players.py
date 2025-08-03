@@ -45,6 +45,12 @@ def get_player(player_id: int) -> Tuple[Response, int]:
         return jsonify({"error": str(e)}), 500
 
 
+@players_bp.route("/dashboard", methods=["GET"])
+def dashboard() -> str:
+    """Render the modern dashboard interface"""
+    return render_template("dashboard.html")
+
+
 @players_bp.route("/search/json", methods=["GET"])
 def search_players_json() -> Tuple[Response, int]:
     name_query = request.args.get("name")

@@ -2,7 +2,7 @@ import logging
 import os
 
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, redirect
 from flask_migrate import Migrate
 
 # ----------------------------------------
@@ -58,7 +58,13 @@ app.register_blueprint(players_bp, url_prefix="/api/players")
 
 @app.route("/")
 def index():
-    logger.info("Index route accessed")
+    logger.info("Index route accessed - redirecting to dashboard")
+    return redirect("/api/players/dashboard")
+
+
+@app.route("/api")
+def api_info():
+    logger.info("API info route accessed")
     return {"message": "🏟 Welcome to the Football Stats API! 🏟"}, 200
 
 

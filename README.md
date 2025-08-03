@@ -1,6 +1,6 @@
-# ⚽ Football Stats API
+# ⚽ Football Stats Platform
 
-A comprehensive, enterprise-grade Flask API for Premier League player statistics with real-time data integration, advanced analytics, and professional British English terminology.
+A comprehensive, enterprise-grade application platform for Premier League player statistics with real-time data integration, advanced analytics, and professional British English terminology. Built with RESTful API architecture and modern web interfaces.
 
 ---
 
@@ -266,19 +266,6 @@ with app.app_context():
 
 ---
 
-## 🌍 British English Features
-
-This application uses authentic British football terminology:
-
-- **"Club"** instead of "Team" (Liverpool, Manchester City)
-- **"Matches"** instead of "Games" (Premier League matches)
-- **"Goalkeeper"** instead of "Goalie"
-- **"Football"** throughout (not soccer)
-
-Perfect for UK-based deployments and British football culture! 🇬🇧
-
----
-
 ## 🏆 Premier League Data
 
 - **562 current players** from 2024 season
@@ -307,5 +294,3 @@ MIT License - see LICENSE file for details
 ---
 
 **Built with Flask, PostgreSQL, Docker and a passion for Premier League football** ⚽🇬🇧
-
-*Enterprise-ready • Real-time data • British terminology • Advanced analytics*

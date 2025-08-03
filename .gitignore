@@ -1,6 +1,6 @@
 # ===========================================
-# Professional .gitignore for Football Stats API
-# Keep only essential code and documentation
+# Professional .gitignore for Football Stats Platform
+# GitHub-ready repository structure
 # ===========================================
 
 # Python
@@ -42,7 +42,7 @@ ENV/
 *.pem
 *.key
 
-# Database
+# Database & Data
 *.db
 *.sqlite
 *.sqlite3
@@ -64,7 +64,7 @@ app.log*
 *.swo
 *~
 
-# macOS System Files (Keep Out!)
+# macOS System Files
 .DS_Store
 .DS_Store?
 ._*
@@ -86,28 +86,16 @@ coverage.xml
 .hypothesis/
 
 # ===========================================
-# INTERVIEW/DEMO FILES TO EXCLUDE
-# (Keep repository clean and professional)
+# PRIVATE INTERVIEW/DEMO MATERIALS
+# (Keep repository professional for GitHub)
 # ===========================================
 
-# Interview materials (private)
+# Interview preparation materials (private)
 interview-prep/
-docs/
+JUNIOR_SA_INTERVIEW_GUIDE.md
+ENHANCED_DEMO_SCRIPT.md
 
-# Environment and logs
-.env
-*.log
-
-# CI/CD and testing artifacts
-bandit-report.json
-safety-report.json
-pytest-results.xml
-coverage.xml
-.coverage
-.pytest_cache/
-htmlcov/
-
-# Development documentation and analysis
+# Development documentation (keep local)
 docs/DEMO_STATUS_REPORT.md
 docs/FINAL_ANALYSIS.md
 docs/LINTING.md
@@ -121,24 +109,54 @@ docs/test_load_testing.py
 docs/test_shell_escaping.py
 docs/test_understat.py
 
-# Utility scripts
+# Development and debugging scripts
 scripts/
+debug_api_data.py
+demo_shell_escaping.sh
+lint.sh
+organize_structure.sh
+run_api_tests.sh
+show_project_structure.sh
+test_load_testing.py
+test_shell_escaping.py
 
-# Project organization guide (keep local)
+# Analysis and troubleshooting documents
+AI_DEVELOPMENT_STRATEGY.md
+API_TESTING_REPORT.md
+DEMO_GUIDE.md
+DEMO_SCRIPT.md
+DEMO_STATUS_REPORT.md
+FINAL_ANALYSIS.md
+INTERVIEW_PRESENTATION_GUIDE.md
+LINTING.md
+PROBLEMS_ANALYSIS.md
+PROBLEMS_FIXED.md
+PROJECT_STRUCTURE_ANALYSIS.md
 PROJECT_STRUCTURE.md
+SHELL_ESCAPING_REPORT.md
+
+# Development Red Hat strategy docs (keep local)
+REDHAT_INTEGRATION_STRATEGY.md
+docs/REDHAT_INTEGRATION_STRATEGY.md
+
+# Backup and temporary files
+*_backup.*
+app_standalone_backup.py
+app.py
 
 # ===========================================
-# KEEP THESE ESSENTIAL FILES FOR GITHUB:
-# - README.md
-# - docker-compose.yml
-# - Dockerfile
-# - requirements.txt
-# - app/ directory
-# - test_api_runtime.py (main test)
-# - test_api_pytest.py (pytest suite)
-# - openshift-deployment.yaml
-# - REDHAT_INTEGRATION_STRATEGY.md
-# - Makefile
-# - entrypoint.sh
-# - wsgi.py
+# GITHUB REPOSITORY WILL INCLUDE:
+# ✅ README.md (platform overview)
+# ✅ app/ (complete application code)
+# ✅ docker-compose.yml (container orchestration)
+# ✅ dockerfile (container definition)
+# ✅ requirements.txt (Python dependencies)
+# ✅ test_api*.py (testing suites)
+# ✅ openshift-deployment.yaml (enterprise deployment)
+# ✅ Makefile (build automation)
+# ✅ entrypoint.sh (container startup)
+# ✅ wsgi.py (production WSGI)
+# ✅ import_players.py (data management)
+# ✅ pyproject.toml (project configuration)
+# ✅ mypy.ini (type checking config)
 # ===========================================
