@@ -86,28 +86,9 @@ coverage.xml
 .hypothesis/
 
 # ===========================================
-# PRIVATE INTERVIEW/DEMO MATERIALS
+# DEVELOPMENT & DEBUGGING FILES
 # (Keep repository professional for GitHub)
 # ===========================================
-
-# Interview preparation materials (private)
-interview-prep/
-JUNIOR_SA_INTERVIEW_GUIDE.md
-ENHANCED_DEMO_SCRIPT.md
-
-# Development documentation (keep local)
-docs/DEMO_STATUS_REPORT.md
-docs/FINAL_ANALYSIS.md
-docs/LINTING.md
-docs/PROBLEMS_ANALYSIS.md
-docs/PROBLEMS_FIXED.md
-docs/API_TESTING_REPORT.md
-docs/SHELL_ESCAPING_REPORT.md
-docs/app_standalone_backup.py
-docs/structure.txt
-docs/test_load_testing.py
-docs/test_shell_escaping.py
-docs/test_understat.py
 
 # Development and debugging scripts
 scripts/
@@ -119,6 +100,21 @@ run_api_tests.sh
 show_project_structure.sh
 test_load_testing.py
 test_shell_escaping.py
+
+# Development documentation (keep local)
+docs/DEMO_STATUS_REPORT.md
+docs/FINAL_ANALYSIS.md
+docs/LINTING.md
+docs/PROBLEMS_ANALYSIS.md
+docs/PROBLEMS_FIXED.md
+docs/API_TESTING_REPORT.md
+docs/SHELL_ESCAPING_REPORT.md
+docs/DEMO_GUIDE.md
+docs/app_standalone_backup.py
+docs/structure.txt
+docs/test_load_testing.py
+docs/test_shell_escaping.py
+docs/test_understat.py
 
 # Analysis and troubleshooting documents
 AI_DEVELOPMENT_STRATEGY.md
@@ -134,15 +130,22 @@ PROBLEMS_FIXED.md
 PROJECT_STRUCTURE_ANALYSIS.md
 PROJECT_STRUCTURE.md
 SHELL_ESCAPING_REPORT.md
-
-# Development Red Hat strategy docs (keep local)
 REDHAT_INTEGRATION_STRATEGY.md
-docs/REDHAT_INTEGRATION_STRATEGY.md
+ENHANCED_DEMO_SCRIPT.md
+JUNIOR_SA_INTERVIEW_GUIDE.md
+OPENSHIFT_DEPLOYMENT_GUIDE.md
+OUTREACH_EMAIL_DRAFT.md
 
-# Backup and temporary files
-*_backup.*
-app_standalone_backup.py
-app.py
+# IDE and personal settings
+.vscode/
+.idea/
+
+# CI/CD development docs
+.github/CICD_PIPELINE_DOCUMENTATION.md
+.github/GITHUB_ACTIONS_V4_UPDATES.md
+
+# Interview preparation materials
+interview-prep/
 
 # ===========================================
 # GITHUB REPOSITORY WILL INCLUDE:
