@@ -8,7 +8,6 @@ import asyncio
 import json
 import time
 from typing import Any, Dict, List, Optional, Tuple
-from urllib.parse import urlencode
 
 import aiohttp
 import requests
@@ -144,12 +143,12 @@ class APITestSuite:
             )
             if success and isinstance(data, list) and len(data) > 0:
                 player = data[0]
-                if 'Name' not in player or 'Club' not in player:
-                    print(f"   ❌ Missing required fields in player data: {list(player.keys())}")
-                else:
+                if "Name" not in player or "Club" not in player:
                     print(
-                        f"   └─ Found: {player['Name']} ({player['Club']})"
+                        f"   ❌ Missing required fields in player data: {list(player.keys())}"
                     )
+                else:
+                    print(f"   └─ Found: {player['Name']} ({player['Club']})")
 
         # Test search with no results
         self.test_endpoint(
@@ -164,10 +163,12 @@ class APITestSuite:
             "GET", "/api/players/1", test_name="Get player by ID (1)"
         )
         if success and "name" in data:
-            if data and 'Name' in data:
+            if data and "Name" in data:
                 print(f"   └─ Player 1: {data['Name']} ({data['Club']})")
             else:
-                print(f"   ❌ Missing required fields in player data: {list(data.keys()) if data else 'No data'}")
+                print(
+                    f"   ❌ Missing required fields in player data: {list(data.keys()) if data else 'No data'}"
+                )
 
         # Test invalid player ID
         self.test_endpoint(
@@ -231,11 +232,11 @@ class APITestSuite:
         if success and isinstance(data, dict):
             required_fields = ["total_items", "total_pages", "current_page", "players"]
             missing_fields = [field for field in required_fields if field not in data]
-            
+
             if missing_fields:
                 print(f"   ❌ Missing required pagination fields: {missing_fields}")
                 return
-                
+
             total_items = data["total_items"]
             total_pages = data["total_pages"]
             current_page = data["current_page"]

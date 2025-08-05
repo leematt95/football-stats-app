@@ -19,7 +19,9 @@ from sqlalchemy import (
     create_engine,
 )
 from sqlalchemy import exc as sa_exc
-from sqlalchemy import func
+from sqlalchemy import (
+    func,
+)
 from sqlalchemy.dialects.postgresql import insert
 from understat import Understat  # type: ignore[import]
 

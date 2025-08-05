@@ -78,12 +78,12 @@ def get_players_paginated() -> Tuple[Response, int]:
     try:
         page_param = request.args.get("page", type=int)
         per_page_param = request.args.get("per_page", type=int)
-        
+
         if page_param is None:
             return jsonify({"error": "Missing required parameter: page"}), 400
         if per_page_param is None:
             return jsonify({"error": "Missing required parameter: per_page"}), 400
-            
+
         page = page_param
         per_page = per_page_param
         name_query = request.args.get("name")

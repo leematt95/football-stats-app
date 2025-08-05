@@ -5,10 +5,8 @@ Professional test suite with fixtures, parametrized tests, and detailed reportin
 """
 
 import asyncio
-import json
 import time
-from typing import Any, Dict, List
-from urllib.parse import urlencode
+from typing import Any, Dict
 
 import aiohttp
 import pytest
@@ -49,7 +47,8 @@ class TestWelcomeEndpoint:
 
     def test_welcome_message(self, api_session, api_base_url, wait_for_api):
         """Test that the welcome endpoint returns expected message."""
-        response = api_session.get(f"{api_base_url}/")
+        headers = {'Accept': 'application/json'}
+        response = api_session.get(f"{api_base_url}/", headers=headers)
         assert response.status_code == 200
 
         data = response.json()
@@ -380,7 +379,9 @@ class TestAPIDocumentation:
         ]
 
         for endpoint in endpoints:
-            response = api_session.get(f"{api_base_url}{endpoint}")
+            # Send proper headers to request JSON response
+            headers = {'Accept': 'application/json'}
+            response = api_session.get(f"{api_base_url}{endpoint}", headers=headers)
             if response.status_code == 200:
                 assert "application/json" in response.headers.get("content-type", "")
                 # Should be valid JSON
