@@ -1,5 +1,5 @@
 # OpenShift Deployment Configuration for Football Stats API
-# This demonstrates RedHat OpenShift readiness
+# Production-ready deployment for Red Hat OpenShift Container Platform
 ---
 apiVersion: apps/v1
 kind: Deployment
